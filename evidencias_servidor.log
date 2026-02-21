@@ -1,0 +1,48 @@
+2026-02-21T13:34:29 | Arrancando servidor en localhost:3443
+2026-02-21T13:34:33 | Nueva conexión establecida desde ('127.0.0.1', 54511)
+2026-02-21T13:34:41 | Petición recibida: LOGIN
+2026-02-21T13:34:41 | Token de sesión generado exitosamente para el usuario: admin
+2026-02-21T13:34:41 | Login exitoso: Usuario 'admin' autenticado.
+2026-02-21T13:34:49 | Petición recibida: TRANSACCION
+2026-02-21T13:34:49 | OPERACION INVALIDA: El usuario admin intento transferir cantidad no permitida: -15.0
+2026-02-21T13:34:56 | Petición recibida: TRANSACCION
+2026-02-21T13:34:56 | TRANSACCION SEGURA: admin envio 4.0 EUR de 5 a 8 (Integridad Verificada).
+2026-02-21T13:35:00 | Nueva conexión establecida desde ('127.0.0.1', 61736)
+2026-02-21T13:35:00 | Cliente desconectado: ('127.0.0.1', 54511)
+2026-02-21T13:35:15 | Petición recibida: LOGIN
+2026-02-21T13:35:15 | Token de sesión generado exitosamente para el usuario: user1
+2026-02-21T13:35:15 | Login exitoso: Usuario 'user1' autenticado.
+2026-02-21T13:35:19 | Cliente desconectado: ('127.0.0.1', 61736)
+2026-02-21T13:35:52 | Servidor apagado manualmente de forma segura.
+2026-02-21T13:35:59 | Arrancando servidor en localhost:3443
+2026-02-21T13:36:06 | Nueva conexión establecida desde ('127.0.0.1', 53416)
+2026-02-21T13:36:12 | Petición recibida: LOGIN
+2026-02-21T13:36:12 | Token de sesión generado exitosamente para el usuario: admin
+2026-02-21T13:36:12 | Login exitoso: Usuario 'admin' autenticado.
+2026-02-21T13:36:24 | Petición recibida: TRANSACCION
+2026-02-21T13:36:24 | TRANSACCION SEGURA: admin envio 9.0 EUR de 1 a 2 (Integridad Verificada).
+2026-02-21T13:36:36 | Petición recibida: TRANSACCION
+2026-02-21T13:36:36 | TRANSACCION SEGURA: admin envio 9.0 EUR de 1 a 2 (Integridad Verificada).
+2026-02-21T13:36:47 | Nueva conexión establecida desde ('127.0.0.1', 57843)
+2026-02-21T13:36:47 | Cliente desconectado: ('127.0.0.1', 53416)
+2026-02-21T13:36:48 | Cliente desconectado: ('127.0.0.1', 57843)
+2026-02-21T13:36:56 | Servidor apagado manualmente de forma segura.
+2026-02-21T13:37:01 | Arrancando servidor en localhost:3443
+2026-02-21T13:37:06 | Nueva conexión establecida desde ('127.0.0.1', 63598)
+2026-02-21T13:37:13 | Petición recibida: LOGIN
+2026-02-21T13:37:13 | Token de sesión generado exitosamente para el usuario: admin
+2026-02-21T13:37:13 | Login exitoso: Usuario 'admin' autenticado.
+2026-02-21T13:37:22 | Petición recibida: TRANSACCION
+2026-02-21T13:37:22 | FALLO DE INTEGRIDAD (MitM): MAC inválido en transacción de usuario 'admin'
+2026-02-21T13:37:23 | Petición recibida: TRANSACCION
+2026-02-21T13:37:23 | ATAQUE DE REPLAY DETECTADO: Nonce repetido 'f2233b1bd0e33ecd7afe70c626f957d1de5efedcae6ed080f1f8754b3ac8e3bf' enviado desde ('127.0.0.1', 63598)
+2026-02-21T13:37:28 | Petición recibida: TRANSACCION
+2026-02-21T13:37:28 | FALLO DE INTEGRIDAD (MitM): MAC inválido en transacción de usuario 'admin'
+2026-02-21T13:37:29 | Petición recibida: TRANSACCION
+2026-02-21T13:37:29 | ATAQUE DE REPLAY DETECTADO: Nonce repetido '4f94cd35e4fcbadcf0fd862e78367ff01e635153f30b54feb930348a8811ee9c' enviado desde ('127.0.0.1', 63598)
+2026-02-21T13:37:34 | Petición recibida: TRANSACCION
+2026-02-21T13:37:34 | FALLO DE INTEGRIDAD (MitM): MAC inválido en transacción de usuario 'admin'
+2026-02-21T13:37:35 | Petición recibida: TRANSACCION
+2026-02-21T13:37:35 | ATAQUE DE REPLAY DETECTADO: Nonce repetido 'd60a7c3b03b1b3e91d3f4a4eec40d3e7604c2f35478b7a07b7e9e43aab737d26' enviado desde ('127.0.0.1', 63598)
+2026-02-21T13:37:38 | Nueva conexión establecida desde ('127.0.0.1', 61203)
+2026-02-21T13:37:44 | Servidor apagado manualmente de forma segura.

@@ -1,0 +1,65 @@
+[
+    {
+        "usuario": "admin",
+        "cuenta_origen": "15",
+        "cuenta_destino": "25",
+        "cantidad": 200.0,
+        "timestamp": "2026-02-21T09:28:47.120863+00:00"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "15",
+        "cuenta_destino": "26",
+        "cantidad": 300.0,
+        "timestamp": "2026-02-21T09:41:36.877273+00:00"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "2",
+        "cuenta_destino": "999999999",
+        "cantidad": 2.0,
+        "timestamp": "2026-02-21T10:47:41.590260+00:00"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "1",
+        "cuenta_destino": "2",
+        "cantidad": 20.0,
+        "timestamp": "2026-02-21T11:03:40.184251+00:00"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "3",
+        "cuenta_destino": "7",
+        "cantidad": 10.0,
+        "timestamp": "2026-02-21T11:11:35.477622+00:00"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "2",
+        "cuenta_destino": "5",
+        "cantidad": 1.0,
+        "timestamp": "2026-02-21T13:11:02.267999"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "5",
+        "cuenta_destino": "8",
+        "cantidad": 4.0,
+        "timestamp": "2026-02-21T13:34:56.848662"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "1",
+        "cuenta_destino": "2",
+        "cantidad": 9.0,
+        "timestamp": "2026-02-21T13:36:24.126522"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "1",
+        "cuenta_destino": "2",
+        "cantidad": 9.0,
+        "timestamp": "2026-02-21T13:36:36.302336"
+    }
+]

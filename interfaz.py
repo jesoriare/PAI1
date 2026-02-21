@@ -12,8 +12,8 @@ import time
 # CONFIGURACIÓN DE CONEXIÓN
 # ----------------------------
 HOST = "127.0.0.1"
-PORT = 3443
-base = "SSIISecurityTeam4"
+PORT = 3444
+base = "SSIISecurityTeam9"
 HMAC_KEY = hashlib.sha256(base.encode()).digest()
 
 # Función para calcular el HMAC de un mensaje con una clave secreta.
@@ -46,6 +46,7 @@ def verificar_conexion():
 cliente = conectar_servidor()
 usuario_actual = None
 token_actual = None
+nonces_servidor = set()
 
 # Configuración de la ventana principal de la interfaz gráfica.
 root = tk.Tk()
@@ -57,6 +58,8 @@ def mostrar_formulario(titulo):
     formulario = tk.Toplevel(root)
     formulario.title(titulo)
     formulario.geometry("300x200")
+    formulario.grab_set() 
+    formulario.focus_set()
     tk.Label(formulario, text="Nombre de usuario:").pack(pady=5)
     username_entry = tk.Entry(formulario)
     username_entry.pack(pady=5)
@@ -89,6 +92,7 @@ def on_register_click():
             formulario.destroy()
         else:
             messagebox.showerror("Error", respuesta)
+            password_entry.delete(0, tk.END)
     
     tk.Button(formulario, text="Registrarse", command=registrar).pack(pady=20)
 
@@ -122,6 +126,7 @@ def on_login_click():
             actualizar_interfaz(True)
         else:
             messagebox.showerror("Error", respuesta)
+            password_entry.delete(0, tk.END)
     
     tk.Button(formulario, text="Iniciar sesión", command=login).pack(pady=20)
 
@@ -134,7 +139,7 @@ def mostrar_formulario_transaccion():
         return
     formulario = tk.Toplevel(root)
     formulario.title("Realizar Transacción")
-    formulario.geometry("300x250")
+    formulario.geometry("400x350")
     tk.Label(formulario, text="Cuenta Origen:").pack(pady=5)
     cuenta_origen_entry = tk.Entry(formulario)
     cuenta_origen_entry.pack(pady=5)
@@ -158,14 +163,50 @@ def mostrar_formulario_transaccion():
         mensaje = f"TRANSACCION:{token_actual}:{cuenta_origen}:{cuenta_destino}:{cantidad}:{nonce}:{mac}"
         try:
             cliente.send(mensaje.encode())
-            respuesta = cliente.recv(4096).decode()
+            respuesta_cruda = cliente.recv(4096).decode()
+            cliente.setblocking(False)
+            try:
+                while True:
+                    descarte = cliente.recv(4096)
+                    if not descarte: break
+            except:
+                pass # Si no hay nada más que leer, perfecto
+            cliente.setblocking(True)
+            # --- NUEVA LÓGICA: PROTEGER RESPUESTA DEL SERVIDOR ---
+            if respuesta_cruda.startswith("SEGURO:"):
+                partes = respuesta_cruda.split(":", 3)
+                nonce_resp = partes[1]
+                mac_resp = partes[2]
+                mensaje_real = partes[3]
+                
+                # 1. Anti-Replay en el cliente
+                if nonce_resp in nonces_servidor:
+                    messagebox.showerror("Ataque Replay", "El servidor ha enviado un mensaje repetido.")
+                    formulario.destroy()
+                    return
+                nonces_servidor.add(nonce_resp)
+                
+                # 2. Anti-MitM en el cliente
+                mac_calc = calcular_mac(HMAC_KEY, f"{nonce_resp}:{mensaje_real}")
+                if not hmac.compare_digest(mac_calc, mac_resp):
+                    messagebox.showerror("Ataque MitM", "La respuesta del servidor ha sido modificada.")
+                    formulario.destroy()
+                    return
+                
+                respuesta = mensaje_real
+            else:
+                respuesta = respuesta_cruda
+            # -----------------------------------------------------
+
             if "Transferencia realizada" in respuesta:
                 messagebox.showinfo("Éxito", respuesta)
             else:
                 messagebox.showerror("Error", respuesta)
+                
         except Exception:
             messagebox.showerror("Error", "El servidor no está disponible. Inicie sesión nuevamente.")
             reiniciar_sesion()
+            
         formulario.destroy()
     
     tk.Button(formulario, text="Realizar Transacción", command=realizar_transaccion).pack(pady=20)
