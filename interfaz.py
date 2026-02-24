@@ -12,7 +12,7 @@ import time
 # CONFIGURACIÓN DE CONEXIÓN
 # ----------------------------
 HOST = "127.0.0.1"
-PORT = 3444
+PORT = 3443
 base = "SSIISecurityTeam9"
 HMAC_KEY = hashlib.sha256(base.encode()).digest()
 
