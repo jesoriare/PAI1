@@ -12,5 +12,12 @@
         "cuenta_destino": "9",
         "cantidad": 20.0,
         "timestamp": "2026-03-10T03:10:44.827541"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "2",
+        "cuenta_destino": "5",
+        "cantidad": 5.0,
+        "timestamp": "2026-03-10T04:21:58.816291"
     }
 ]

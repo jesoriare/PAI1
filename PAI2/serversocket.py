@@ -248,6 +248,24 @@ def manejar_cliente(conn, addr):
         logging.info(f"Cliente desconectado: {addr}")
 
 # -----------------------------
+# HANDSHAKE TLS EN HILO SEPARADO
+# -----------------------------
+def iniciar_conexion_segura(conn, addr, contexto_tls):
+    try:
+        conn_tls = contexto_tls.wrap_socket(conn, server_side=True)
+    except ssl.SSLError as e:
+        logging.error(f"Fallo handshake TLS desde {addr}: {e}")
+        conn.close()
+        return
+    try:
+        cipher = conn_tls.cipher()
+        version = conn_tls.version()
+        logging.info(f"TLS negociado con {addr}: version={version} cipher={cipher}")
+    except Exception:
+        pass
+    manejar_cliente(conn_tls, addr)
+
+# -----------------------------
 # INICIO DEL SERVIDOR
 # -----------------------------
 def main():
@@ -275,13 +293,11 @@ def main():
         while True:
             try:
                 conn, addr = servidor.accept()
-                try:
-                    conn_tls = contexto_tls.wrap_socket(conn, server_side=True)
-                except ssl.SSLError as e:
-                    logging.error(f"Fallo handshake TLS desde {addr}: {e}")
-                    conn.close()
-                    continue
-                threading.Thread(target=manejar_cliente, args=(conn_tls, addr), daemon=True).start()
+                threading.Thread(
+                    target=iniciar_conexion_segura,
+                    args=(conn, addr, contexto_tls),
+                    daemon=True
+                ).start()
             except (socket.timeout, TimeoutError): 
                 pass
             except KeyboardInterrupt:

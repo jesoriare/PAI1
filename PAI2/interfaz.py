@@ -7,6 +7,8 @@ import hashlib
 import hmac
 import secrets
 import time
+import os
+import logging
 
 # ----------------------------
 # CONFIGURACIÓN DE CONEXIÓN
@@ -15,6 +17,20 @@ HOST = "127.0.0.1"
 PORT = 3443
 base = "SSIISecurityTeam9"
 HMAC_KEY = hashlib.sha256(base.encode()).digest()
+CERT_PATH = os.path.join(os.path.dirname(__file__), 'certs', 'cert.pem')
+
+# ----------------------------
+# LOGS DE EVIDENCIAS (CLIENTE)
+# ----------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s | %(message)s',
+    datefmt='%Y-%m-%dT%H:%M:%S',
+    handlers=[
+        logging.FileHandler('evidencias_cliente.log', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
 
 # Función para calcular el HMAC de un mensaje con una clave secreta.
 def calcular_mac(clave, mensaje):
@@ -24,32 +40,54 @@ def calcular_mac(clave, mensaje):
 def generar_nonce():
     return secrets.token_hex(32)
 
+# Huella SHA-256 del certificado esperado (pinning)
+def huella_certificado(path):
+    with open(path, 'rb') as f:
+        pem = f.read().decode('utf-8')
+    der = ssl.PEM_cert_to_DER_cert(pem)
+    return hashlib.sha256(der).hexdigest()
+
 # Conecta con el servidor con TLS
 def conectar_servidor():
-    
-    """ Intenta conectar con el servidor mediante un túnel seguro TLS 1.3. """
+    """ Intenta conectar con el servidor mediante un tunel seguro TLS 1.3. """
     try:
         # 1. Configurar contexto del cliente
         contexto_tls = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         contexto_tls.minimum_version = ssl.TLSVersion.TLSv1_3
         contexto_tls.maximum_version = ssl.TLSVersion.TLSv1_3
-        #contexto_tls.set_ciphers('TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256')
-        
-        # Omitimos validación estricta porque nuestro certificado es autofirmado
+        try:
+            contexto_tls.set_ciphersuites(
+                "TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256"
+            )
+        except AttributeError:
+            pass
+
+        # Validacion del certificado autofirmado (pinning)
         contexto_tls.check_hostname = False
-        contexto_tls.verify_mode = ssl.CERT_NONE
+        contexto_tls.verify_mode = ssl.CERT_REQUIRED
+        contexto_tls.load_verify_locations(CERT_PATH)
 
         # 2. Crear socket normal y conectarlo
         sock_raw = socket.create_connection((HOST, PORT), timeout=5)
-        
+
         # 3. Envolver el socket (Handshake TLS)
         sock_tls = contexto_tls.wrap_socket(sock_raw, server_hostname=HOST)
-        
+
+        # Verificacion adicional por huella (pinning estricto)
+        esperado = huella_certificado(CERT_PATH)
+        presentado = hashlib.sha256(sock_tls.getpeercert(binary_form=True)).hexdigest()
+        if presentado != esperado:
+            sock_tls.close()
+            raise ssl.SSLError("Huella de certificado no coincide (posible MitM)")
+
+        logging.info(f"TLS cliente: version={sock_tls.version()} cipher={sock_tls.cipher()}")
+
         print("Conectado al servidor de forma SEGURA (TLS 1.3).")
         return sock_tls
-        
+
     except Exception as e:
         print(f"No se pudo conectar al servidor SSL: {e}")
+        logging.error(f"No se pudo conectar al servidor SSL: {e}")
         return None
 
 # Verifica si la conexión con el servidor está activa.
@@ -261,3 +299,6 @@ try:
     cliente.close()
 except:
     pass
+
+
+

@@ -1,0 +1,2 @@
+2026-03-10T04:21:37 | modo=raw | usuarios=300 | duracion_s=0.3023 | exitosas=300 | fallidas=0 | tls=None
+2026-03-10T04:21:48 | modo=tls | usuarios=300 | duracion_s=1.6878 | exitosas=300 | fallidas=0 | tls=version=TLSv1.3 cipher=('TLS_AES_256_GCM_SHA384', 'TLSv1.3', 256)
