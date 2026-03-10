@@ -250,23 +250,41 @@ def manejar_cliente(conn, addr):
 # -----------------------------
 # INICIO DEL SERVIDOR
 # -----------------------------
+# Reemplaza tu función main() por esta:
 def main():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as servidor:
-        servidor.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        servidor.bind((HOST, PORT))
-        servidor.listen()
-        servidor.settimeout(1.0)
-        logging.info(f"Arrancando servidor en {HOST}:{PORT}")
+    import ssl # Por si acaso no lo tienes importado arriba
+    
+    # 1. Configurar el contexto SSL/TLS (Objetivos 1 y 2 del PAI)
+    contexto_tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    contexto_tls.minimum_version = ssl.TLSVersion.TLSv1_3
+    contexto_tls.maximum_version = ssl.TLSVersion.TLSv1_3
+    #contexto_tls.set_ciphers('TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256')
+    
+    # Cargar los certificados de la carpeta certs
+    contexto_tls.load_cert_chain(certfile="certs/cert.pem", keyfile="certs/key.pem")
 
-        while True:
-            try:
-                conn, addr = servidor.accept()
-                threading.Thread(target=manejar_cliente, args=(conn, addr), daemon=True).start()
-            except (socket.timeout, TimeoutError): 
-                pass
-            except KeyboardInterrupt:
-                logging.info("Servidor apagado manualmente de forma segura.")
-                break
+    # 2. Levantar el socket tradicional
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as servidor_raw:
+        servidor_raw.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        servidor_raw.bind((HOST, PORT))
+        servidor_raw.listen()
+        logging.info(f"Arrancando servidor VPN SSL/TLS 1.3 en {HOST}:{PORT}")
+        print(f"Servidor VPN SSL/TLS 1.3 escuchando en {HOST}:{PORT}")
+
+        # 3. Envolver el socket con la capa TLS
+        with contexto_tls.wrap_socket(servidor_raw, server_side=True) as servidor_tls:
+            servidor_tls.settimeout(1.0)
+            while True:
+                try:
+                    conn, addr = servidor_tls.accept()
+                    logging.info(f"Conexión segura establecida con {addr}")
+                    # Usamos hilos para soportar 300 empleados concurrentes (Objetivo 4)
+                    threading.Thread(target=manejar_cliente, args=(conn, addr), daemon=True).start()
+                except (socket.timeout, TimeoutError): 
+                    pass
+                except KeyboardInterrupt:
+                    logging.info("Servidor apagado manualmente.")
+                    break
 
 if __name__ == "__main__":
     main()

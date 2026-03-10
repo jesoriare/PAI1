@@ -1,0 +1,7 @@
+2026-03-10T02:54:33 | Arrancando servidor en localhost:3443
+2026-03-10T02:57:17 | Servidor apagado manualmente de forma segura.
+2026-03-10T02:57:23 | Arrancando servidor en localhost:3443
+2026-03-10T02:57:27 | Nueva conexión establecida desde ('127.0.0.1', 52454)
+2026-03-10T02:57:27 | Error durante la comunicación con ('127.0.0.1', 52454): 'utf-8' codec can't decode byte 0xdc in position 4: invalid continuation byte
+2026-03-10T02:57:27 | Cliente desconectado: ('127.0.0.1', 52454)
+2026-03-10T03:10:00 | Servidor apagado manualmente de forma segura.

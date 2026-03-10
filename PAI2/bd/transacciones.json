@@ -1,0 +1,16 @@
+[
+    {
+        "usuario": "admin",
+        "cuenta_origen": "5",
+        "cuenta_destino": "9",
+        "cantidad": 20.0,
+        "timestamp": "2026-03-10T03:10:25.729694"
+    },
+    {
+        "usuario": "admin",
+        "cuenta_origen": "5",
+        "cuenta_destino": "9",
+        "cantidad": 20.0,
+        "timestamp": "2026-03-10T03:10:44.827541"
+    }
+]
