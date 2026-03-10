@@ -5,3 +5,15 @@
 2026-03-10T02:57:27 | Error durante la comunicación con ('127.0.0.1', 52454): 'utf-8' codec can't decode byte 0xdc in position 4: invalid continuation byte
 2026-03-10T02:57:27 | Cliente desconectado: ('127.0.0.1', 52454)
 2026-03-10T03:10:00 | Servidor apagado manualmente de forma segura.
+2026-03-10T03:10:03 | Arrancando servidor TLS en localhost:3443
+2026-03-10T03:10:07 | Nueva conexión establecida desde ('127.0.0.1', 64126)
+2026-03-10T03:10:15 | Petición recibida: LOGIN
+2026-03-10T03:10:15 | Token de sesión generado exitosamente para el usuario: admin
+2026-03-10T03:10:15 | Login exitoso: Usuario 'admin' autenticado.
+2026-03-10T03:10:25 | Petición recibida: TRANSACCION
+2026-03-10T03:10:25 | TRANSACCION SEGURA: admin envio 20.0 EUR de 5 a 9 (Integridad Verificada).
+2026-03-10T03:10:44 | Petición recibida: TRANSACCION
+2026-03-10T03:10:44 | TRANSACCION SEGURA: admin envio 20.0 EUR de 5 a 9 (Integridad Verificada).
+2026-03-10T03:10:47 | Nueva conexión establecida desde ('127.0.0.1', 51948)
+2026-03-10T03:10:47 | Cliente desconectado: ('127.0.0.1', 64126)
+2026-03-10T03:10:52 | Cliente desconectado: ('127.0.0.1', 51948)
