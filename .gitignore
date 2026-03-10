@@ -1,0 +1,3 @@
+# Ignorar certificados y claves privadas
+*.pem
+certs/
