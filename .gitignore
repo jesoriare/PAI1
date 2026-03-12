@@ -1,3 +1,5 @@
 # Ignorar certificados y claves privadas
 *.pem
 certs/
+**/.env
+PAI2/bd/*.json

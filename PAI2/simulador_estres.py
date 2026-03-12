@@ -9,6 +9,8 @@ import hashlib
 HOST = '127.0.0.1'
 PORT = 3443
 NUM_USUARIOS = 300
+MAX_USUARIOS = 1000
+PASO_USUARIOS = 100
 CERT_PATH = os.path.join(os.path.dirname(__file__), 'certs', 'cert.pem')
 
 # Variables para medir el rendimiento
@@ -69,46 +71,63 @@ def cliente_robot(id_robot):
         with lock:
             conexiones_fallidas += 1
 
-def lanzar_prueba():
-    print(f"Iniciando prueba de estres: {NUM_USUARIOS} empleados concurrentes...")
+def ejecutar_prueba(num_usuarios):
+    global conexiones_exitosas, conexiones_fallidas, tls_info
+    conexiones_exitosas = 0
+    conexiones_fallidas = 0
+    tls_info = None
+
+    print(f"Iniciando prueba de estres: {num_usuarios} empleados concurrentes...")
     hilos = []
-    
+
     inicio = time.time()
-    
-    # Crear los 300 robots
-    for i in range(NUM_USUARIOS):
+
+    for i in range(num_usuarios):
         hilo = threading.Thread(target=cliente_robot, args=(i,))
         hilos.append(hilo)
         hilo.start()
-        
-    # Esperar a que todos terminen
+
     for hilo in hilos:
         hilo.join()
-        
+
     fin = time.time()
-    
     duracion = fin - inicio
 
     print("\n" + "="*40)
     print("RESULTADOS DE LA PRUEBA DE RENDIMIENTO")
     print("="*40)
-    print(f"Tiempo total en atender a {NUM_USUARIOS} usuarios: {duracion:.4f} segundos")
+    print(f"Tiempo total en atender a {num_usuarios} usuarios: {duracion:.4f} segundos")
     print(f"Conexiones exitosas (TLS): {conexiones_exitosas}")
     print(f"Conexiones fallidas: {conexiones_fallidas}")
     print("="*40)
 
-    # Guardar evidencias en un log persistente
     ts = datetime.datetime.now().isoformat(timespec="seconds")
     linea = (
-        f"{ts} | usuarios={NUM_USUARIOS} | "
+        f"{ts} | usuarios={num_usuarios} | "
         f"duracion_s={duracion:.4f} | "
         f"exitosas={conexiones_exitosas} | "
-        f"fallidas={conexiones_fallidas} | tls={tls_info}\\n"
+        f"fallidas={conexiones_fallidas} | tls={tls_info}" + os.linesep
     )
-    with open("evidencias_estres.log", "a", encoding="utf-8") as f:
+    with open("evidencias_estres.log", "a", encoding="utf-8", newline="") as f:
         f.write(linea)
+
+    return conexiones_fallidas
+
+
+def lanzar_prueba():
+    usuarios = NUM_USUARIOS
+    while usuarios <= MAX_USUARIOS:
+        fallidas = ejecutar_prueba(usuarios)
+        if fallidas > 0:
+            print(f"\nFallo detectado con {usuarios} usuarios concurrentes.")
+            break
+        usuarios += PASO_USUARIOS
 
 if __name__ == "__main__":
     lanzar_prueba()
+
+
+
+
 
 

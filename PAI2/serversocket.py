@@ -8,6 +8,7 @@ import datetime
 import hmac
 import os
 import logging
+from dotenv import load_dotenv
 
 # -----------------------------
 # CONFIGURACIÓN DE LOS LOGS (Profesional y persistente)
@@ -29,15 +30,22 @@ logging.basicConfig(
 HOST = "localhost"
 PORT = 3443
 
+ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(ENV_PATH)
 DATABASE_FILE = "bd/usuarios.json"
 TRANSACCIONES_FILE = "bd/transacciones.json"
 TOKENS_FILE = "bd/tokens.json"
 SALTS_FILE = "bd/salts.json"
 
-SECRET_KEY = "TokenSecurityTeam9SSII"
-base = "SSIISecurityTeam9"
-HMAC_KEY = hashlib.sha256(base.encode()).digest()
+JWT_SECRET = os.getenv("PAI2_JWT_SECRET")
+if not JWT_SECRET:
+    raise RuntimeError("Falta PAI2_JWT_SECRET")
+SECRET_KEY = JWT_SECRET
 
+HMAC_SECRET = os.getenv("PAI2_HMAC_SECRET")
+if not HMAC_SECRET:
+    raise RuntimeError("Falta PAI2_HMAC_SECRET")
+HMAC_KEY = hashlib.sha256(HMAC_SECRET.encode()).digest()
 # -----------------------------
 # CARGA INICIAL DE DATOS
 # -----------------------------
@@ -306,3 +314,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

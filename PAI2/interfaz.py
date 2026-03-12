@@ -9,14 +9,20 @@ import secrets
 import time
 import os
 import logging
+from dotenv import load_dotenv
 
 # ----------------------------
 # CONFIGURACIÓN DE CONEXIÓN
 # ----------------------------
 HOST = "127.0.0.1"
 PORT = 3443
-base = "SSIISecurityTeam9"
-HMAC_KEY = hashlib.sha256(base.encode()).digest()
+
+ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(ENV_PATH)
+HMAC_SECRET = os.getenv("PAI2_HMAC_SECRET")
+if not HMAC_SECRET:
+    raise RuntimeError("Falta PAI2_HMAC_SECRET")
+HMAC_KEY = hashlib.sha256(HMAC_SECRET.encode()).digest()
 CERT_PATH = os.path.join(os.path.dirname(__file__), 'certs', 'cert.pem')
 
 # ----------------------------
@@ -299,6 +305,7 @@ try:
     cliente.close()
 except:
     pass
+
 
 
 
